@@ -12,7 +12,6 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 $(wildcard Core/Src/*.c) \
-$(wildcard  Drivers/STM32F4xx_HAL_Driver/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -47,10 +46,6 @@ C_DEFS =  \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
--IDrivers/STM32F4xx_HAL_Driver/Inc \
--IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
--IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
--IDrivers/CMSIS/Include
 
 # compile gcc flags
 CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -g -gdwarf-2
