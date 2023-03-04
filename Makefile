@@ -1,11 +1,7 @@
 # ------------------------------------------------
 # Makefile (based on gcc)
 # ------------------------------------------------
-
 TARGET = STM32F407
-
-# debug build?
-DEBUG = 1
 
 # optimization
 OPT = -Og
@@ -15,25 +11,8 @@ BUILD_DIR = build
 
 # C sources
 C_SOURCES =  \
-Core/Src/main.c \
-Core/Src/stm32f4xx_it.c \
-Core/Src/stm32f4xx_hal_msp.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
-Core/Src/system_stm32f4xx.c  
+$(wildcard Core/Src/*.c) \
+$(wildcard  Drivers/STM32F4xx_HAL_Driver/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -74,11 +53,7 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include
 
 # compile gcc flags
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
-
-ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
-endif
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -g -gdwarf-2
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
