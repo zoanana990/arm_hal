@@ -1,9 +1,10 @@
-#include <hal_stm32f4.h>
+#include <hal/hal.h>
+#include <hal/hal_gpio.h>
 
-int main(void)
+void main(void)
 {
+    hal_gpio_init(0);
     while(1);
-    return 0;
 }
 
 
