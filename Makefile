@@ -1,7 +1,7 @@
 # ------------------------------------------------
 # Makefile (based on gcc)
 # ------------------------------------------------
-TARGET = STM32F407
+TARGET = STM32F4
 
 # optimization
 OPT = -Og
@@ -71,6 +71,7 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
+	echo $(OBJECTS)
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
@@ -93,3 +94,6 @@ clean:
 	-rm -fR $(BUILD_DIR)
   
 -include $(wildcard $(BUILD_DIR)/*.d)
+
+load:
+	openocd -f board/stm32f4discovery.cfg
