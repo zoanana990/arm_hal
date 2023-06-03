@@ -226,6 +226,17 @@ typedef struct {
 } SYSCFG_RegDef_t;
 #endif
 
+typedef struct
+{
+    __vo u32 sr;
+    __vo u32 dr;
+    __vo u32 brr;
+    __vo u32 cr1;
+    __vo u32 cr2;
+    __vo u32 cr3;
+    __vo u32 gtpr;
+} USART_RegDef_t;
+
 /*
  * Peripheral definition:
  *  Peripheral base address type casted to xxx_RegDef_t
@@ -248,6 +259,7 @@ typedef struct {
 
 #define SYSCFG              ((SYSCFG_RegDef_t *) SYSCFG_BASEADDR)
 
+/************************************ GPIO CLOCK MACROs ***********************************/
 /*
  * Clock enable macros for GPIO peripherals
  * */
@@ -297,15 +309,28 @@ typedef struct {
                                   (x == GPIOH) ? 7 : \
                                   (x == GPIOI) ? 8 : -1 )
 
+/************************************ I2C CLOCK MACROs ***********************************/
 /*
  * Clock enable maros for I2C peripherals
  * */
 #define I2C1_PCLK_EN()     (RCC->apb1enr |= (1 << 21))
 
+/************************************ SPI CLOCK MACROs ***********************************/
 /*
  * Clock enable maros for SPI peripherals
  * */
 #define SPI1_PCLK_EN()     (RCC->apb1enr |= (1 << 12))
+
+/************************************ USART CLOCK MACROs ***********************************/
+/*
+ * Clock enable macros for usart peripherals
+ * */
+#define USART1_PCLK_EN()     (RCC->ahb1enr |= (1 << 0))
+
+#define USART1_PCLK_DI()     (RCC->ahb1enr &= ~(1 << 0))
+
+#define GPIOA_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 0)); (RCC->ahb1rstr &= ~(1 << 0));}while(0)
+
 
 /*
  * Clock enable macros for syscfg
