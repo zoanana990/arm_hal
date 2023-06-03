@@ -333,5 +333,10 @@ void hal_gpio_irqPriorityConfig(u8 irq_number, u8 irq_priority)
 
 void hal_gpio_irqHandling(u8 pin_number)
 {
-
+    /* clear the exti pr register corresponding to the pin number */
+    if(EXTI->pr & (1 << pin_number))
+    {
+        /* clear */
+        EXTI->pr |= (1 << pin_number);
+    }
 }
