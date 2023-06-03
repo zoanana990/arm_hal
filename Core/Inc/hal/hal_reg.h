@@ -2,6 +2,7 @@
 #define __HAL_STM32F4__
 
 #include <hal/hal_type.h>
+#include <hal/hal.h>
 
 /*
  * Some common macros
@@ -52,6 +53,8 @@
 #define GPIOK_BASEADDR              (AHB1PERIF_BASE + 0x2800)
 
 #define RCC_BASEADDR                (AHB1PERIF_BASE + 0x3800)
+
+
 /*
  * Base addresses of peripherals which are hanging on APB1 bus
  * */
@@ -70,7 +73,7 @@
 /*
  * Base addresses of peripherals which are hanging on APB2 bus
  * */
-#define EXT1_BASEADDR               (APB2PERIF_BASE + 0x3C00)
+#define EXTI_BASEADDR               (APB2PERIF_BASE + 0x3C00)
 #define SPI1_BASEADDR               (APB2PERIF_BASE + 0x3000)
 #define SYSCFG_BASEADDR             (APB2PERIF_BASE + 0x3800)
 
@@ -162,6 +165,34 @@ typedef struct {
 } RCC_RegDef_t;
 #endif
 
+typedef struct
+{
+    __vo u32 imr;
+    __vo u32 emr;
+    __vo u32 rtsr;
+    __vo u32 ftsr;
+    __vo u32 swier;
+    __vo u32 pr;
+} EXTI_RegDef_t;
+
+#ifdef STM32F429
+typedef struct {
+    __vo u32 memrmp;
+    __vo u32 pmc;
+    __vo u32 exticr[4];
+    u32 reserved1[2];
+    __vo u32 cmpcr;
+} SYSCFG_RegDef_t;
+#else
+typedef struct {
+    __vo u32 memrmp;
+    __vo u32 pmc;
+    __vo u32 exticr[4];
+    u32 reserved1[2];
+    __vo u32 cmpcr;
+} SYSCFG_RegDef_t;
+#endif
+
 /*
  * Peripheral definition:
  *  Peripheral base address type casted to xxx_RegDef_t
@@ -179,6 +210,8 @@ typedef struct {
 #define GPIOK               ((GPIO_RegDef_t *)GPIOK_BASEADDR)
 
 #define RCC                 ((RCC_RegDef_t *) RCC_BASEADDR)
+
+#define EXTI                ((EXTI_RegDef_t *) EXTI_BASEADDR)
 
 /*
  * Clock enable macros for GPIO peripherals

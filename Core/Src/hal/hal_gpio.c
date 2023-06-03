@@ -21,28 +21,36 @@ void hal_gpio_periClockControl(GPIO_RegDef_t *pGPIOx, u8 permission)
         if(pGPIOx == GPIOA)
         {
             GPIOA_PCLK_EN();
-        }else if (pGPIOx == GPIOB)
+        }
+        else if (pGPIOx == GPIOB)
         {
             GPIOB_PCLK_EN();
-        }else if (pGPIOx == GPIOC)
+        }
+        else if (pGPIOx == GPIOC)
         {
             GPIOC_PCLK_EN();
-        }else if (pGPIOx == GPIOD)
+        }
+        else if (pGPIOx == GPIOD)
         {
             GPIOD_PCLK_EN();
-        }else if (pGPIOx == GPIOE)
+        }
+        else if (pGPIOx == GPIOE)
         {
             GPIOE_PCLK_EN();
-        }else if (pGPIOx == GPIOF)
+        }
+        else if (pGPIOx == GPIOF)
         {
             GPIOF_PCLK_EN();
-        }else if (pGPIOx == GPIOG)
+        }
+        else if (pGPIOx == GPIOG)
         {
             GPIOG_PCLK_EN();
-        }else if (pGPIOx == GPIOH)
+        }
+        else if (pGPIOx == GPIOH)
         {
             GPIOH_PCLK_EN();
-        }else if (pGPIOx == GPIOI)
+        }
+        else if (pGPIOx == GPIOI)
         {
             GPIOI_PCLK_EN();
         }
@@ -52,28 +60,36 @@ void hal_gpio_periClockControl(GPIO_RegDef_t *pGPIOx, u8 permission)
         if(pGPIOx == GPIOA)
         {
             GPIOA_PCLK_DI();
-        }else if (pGPIOx == GPIOB)
+        }
+        else if (pGPIOx == GPIOB)
         {
             GPIOB_PCLK_DI();
-        }else if (pGPIOx == GPIOC)
+        }
+        else if (pGPIOx == GPIOC)
         {
             GPIOC_PCLK_DI();
-        }else if (pGPIOx == GPIOD)
+        }
+        else if (pGPIOx == GPIOD)
         {
             GPIOD_PCLK_DI();
-        }else if (pGPIOx == GPIOE)
+        }
+        else if (pGPIOx == GPIOE)
         {
             GPIOE_PCLK_DI();
-        }else if (pGPIOx == GPIOF)
+        }
+        else if (pGPIOx == GPIOF)
         {
             GPIOF_PCLK_DI();
-        }else if (pGPIOx == GPIOG)
+        }
+        else if (pGPIOx == GPIOG)
         {
             GPIOG_PCLK_DI();
-        }else if (pGPIOx == GPIOH)
+        }
+        else if (pGPIOx == GPIOH)
         {
             GPIOH_PCLK_DI();
-        }else if (pGPIOx == GPIOI)
+        }
+        else if (pGPIOx == GPIOI)
         {
             GPIOI_PCLK_DI();
         }
@@ -107,7 +123,33 @@ void hal_gpio_init(GPIO_Handle_t *pGPIOHandle)
     }
     else
     {
-        /* this part will code later (interrupt mode) */
+        if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == HAL_GPIO_MODE_IT_FT)
+        {
+            /* configure the FTSR */
+            EXTI->ftsr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+
+            /* clear the corresponding RTSR bit */
+            EXTI->rtsr &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == HAL_GPIO_MODE_IT_RT)
+        {
+            /* configure the RTSR */
+            EXTI->rtsr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+
+            /* clear the corresponding FTSR bit */
+            EXTI->ftsr &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == HAL_GPIO_MODE_IT_RFT)
+        {
+            /* configure the FTSR and RTSR */
+            EXTI->ftsr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+            EXTI->rtsr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+
+        /* Configure the GPIO port selection in SYSCFG_EXTICR */
+
+        /* Enable the exti interrupt delivery using IMR */
+        EXTI->imr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
     }
 
     temp = 0;
@@ -151,28 +193,36 @@ void hal_gpio_deInit(GPIO_RegDef_t *pGPIOx)
     if(pGPIOx == GPIOA)
     {
         GPIOA_REG_RESET();
-    }else if (pGPIOx == GPIOB)
+    }
+    else if (pGPIOx == GPIOB)
     {
         GPIOB_REG_RESET();
-    }else if (pGPIOx == GPIOC)
+    }
+    else if (pGPIOx == GPIOC)
     {
         GPIOC_REG_RESET();
-    }else if (pGPIOx == GPIOD)
+    }
+    else if (pGPIOx == GPIOD)
     {
         GPIOD_REG_RESET();
-    }else if (pGPIOx == GPIOE)
+    }
+    else if (pGPIOx == GPIOE)
     {
         GPIOE_REG_RESET();
-    }else if (pGPIOx == GPIOF)
+    }
+    else if (pGPIOx == GPIOF)
     {
         GPIOF_REG_RESET();
-    }else if (pGPIOx == GPIOG)
+    }
+    else if (pGPIOx == GPIOG)
     {
         GPIOG_REG_RESET();
-    }else if (pGPIOx == GPIOH)
+    }
+    else if (pGPIOx == GPIOH)
     {
         GPIOH_REG_RESET();
-    }else if (pGPIOx == GPIOI)
+    }
+    else if (pGPIOx == GPIOI)
     {
         GPIOI_REG_RESET();
     }
@@ -214,10 +264,22 @@ void hal_gpio_toggleOutputPin(GPIO_RegDef_t *pGPIOx, u8 pin_number)
 /*
  * IRQ configuration and isr handling
  * */
+
+/*
+ * GPIO pin interrupt configuration
+ * 1. Pin must be input configuration
+ * 2. Configure the edge trigger (RT, FT, RFT)
+ * 3. Enable interrupt delivery from peripheral to the processor (on peripheral side)
+ * 4. Identify the IRQ number on which the processor accepts the interrupt from that pin
+ * 5. Configure the IRQ priority for the identified IRQ number
+ * 6. Enable interrupt reception on that IRQ number
+ * 7. Implement IRQ number
+ * */
 void hal_gpio_irqConfig(u8 irq_number, u8 irq_priority, u8 EnorDi)
 {
 
 }
+
 void hal_gpio_irqHandling(u8 pin_number)
 {
 
