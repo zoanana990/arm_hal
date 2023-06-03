@@ -1,24 +1,44 @@
 #ifndef __HAL_GPIO__
 #define __HAL_GPIO__
 
-#include <hal/hal.h>
+#include "hal_reg.h"
 #include <hal/hal_type.h>
 
 typedef struct
 {
-    u8 GPIO_PinNumber;
-    u8 GPIO_PinMode;
-    u8 GPIO_PinSpeed;
-    u8 GPIO_PinOpType;
+    u8 GPIO_PinNumber;                  /* possible values from @GPIO_Pin_number_t */
+    u8 GPIO_PinMode;                    /* possible values from @GPIO_Mode_t */
+    u8 GPIO_PinSpeed;                   /* possible values from @GPIO_Speed_t */
+    u8 GPIO_PinPupdControl;             /* possible values from @GPIO_PUPD_Type_t */
+    u8 GPIO_PinOpType;                  /* possible values from @GPIO_OP_Type_t */
     u8 GPIO_PinAltFunc;
 } GPIO_PinConfig_t;
 
 typedef struct
 {
     /* a pointer to hold the base address of the GPIO peripheral */
-    GPIO_RegDef_t *pGPIOx;             /* This holds the base address of the GPIO port to which the pin belongs */
+    GPIO_RegDef_t   *pGPIOx;             /* This holds the base address of the GPIO port to which the pin belongs */
     GPIO_PinConfig_t GPIO_PinConfig;
 } GPIO_Handle_t;
+
+typedef enum {
+    HAL_GPIO_PIN_0 = 0,
+    HAL_GPIO_PIN_1,
+    HAL_GPIO_PIN_2,
+    HAL_GPIO_PIN_3,
+    HAL_GPIO_PIN_4,
+    HAL_GPIO_PIN_5,
+    HAL_GPIO_PIN_6,
+    HAL_GPIO_PIN_7,
+    HAL_GPIO_PIN_8,
+    HAL_GPIO_PIN_9,
+    HAL_GPIO_PIN_10,
+    HAL_GPIO_PIN_11,
+    HAL_GPIO_PIN_12,
+    HAL_GPIO_PIN_13,
+    HAL_GPIO_PIN_14,
+    HAL_GPIO_PIN_15
+} GPIO_Pin_number_t;
 
 /*
  * gpio pin possible modes
@@ -34,6 +54,14 @@ typedef enum {
     HAL_GPIO_MODE_LAST
 } GPIO_Mode_t;
 
+typedef enum
+{
+    HAL_GPIO_SPEED_LOW = 0,
+    HAL_GPIO_SPEED_MEDIUM,
+    HAL_GPIO_SPEED_HIGH,
+    HAL_GPIO_SPEED_VERY_HIGH
+} GPIO_Speed_t;
+
 /*
  * gpio pin possible output type
  * */
@@ -42,6 +70,16 @@ typedef enum {
     HAL_GPIO_OP_TYPE_OD,
     HAL_GPIO_OP_TYPE_LAST
 } GPIO_OP_Type_t;
+
+/*
+ * gpio pull-up, pull-down configuration macros
+ * */
+typedef enum {
+    HAL_GPIO_NO_PUPD = 0,
+    HAL_GPIO_PU,
+    HAL_GPIO_PD,
+    HAL_GPIO_PUPD_LAST
+} GPIO_PUPD_Type_t;
 
 /*****************************************************************************************
  *                              API DECLARATION IN GPIO

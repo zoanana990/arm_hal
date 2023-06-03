@@ -86,16 +86,16 @@
  * */
 typedef struct
 {
-    __vo u32 moder;   /* mode register */
-    __vo u32 otyper;  /* output type register */
-    __vo u32 ospeedr; /* output speed register */
-    __vo u32 pupdr;   /* pull-up/pull-down register */
-    __vo u32 idr;     /* input data register */
-    __vo u32 odr;     /* output data register */
-    __vo u32 bsrr;    /* set/reset register*/
-    __vo u32 lckr;    /* configuration lock register */
-    __vo u32 afrl;    /* alternate function low register */
-    __vo u32 afrh;    /* alternate function high register */
+    __vo u32 moder;     /* mode register */
+    __vo u32 otyper;    /* output type register */
+    __vo u32 ospeedr;   /* output speed register */
+    __vo u32 pupdr;     /* pull-up/pull-down register */
+    __vo u32 idr;       /* input data register */
+    __vo u32 odr;       /* output data register */
+    __vo u32 bsrr;      /* set/reset register*/
+    __vo u32 lckr;      /* configuration lock register */
+    __vo u32 afr[2];    /* [0]: alternate function low register */
+                        /* [1]: alternate function high register */
 } GPIO_RegDef_t;
 
 /* Need to notice which the target is */
@@ -136,20 +136,27 @@ typedef struct {
     __vo u32 ahb1rstr;
     __vo u32 ahb2rstr;
     __vo u32 ahb3rstr;
+    __vo u32 reserved0;
     __vo u32 apb1rstr;
     __vo u32 apb2rstr;
+    __vo u32 reserved1[2];
     __vo u32 ahb1enr;
     __vo u32 ahb2enr;
     __vo u32 ahb3enr;
+    __vo u32 reserved2;
     __vo u32 apb1enr;
     __vo u32 apb2enr;
+    __vo u32 reserved3[2];
     __vo u32 ahb1lpenr;
     __vo u32 ahb2lpenr;
     __vo u32 ahb3lpenr;
+    __vo u32 reserved4;
     __vo u32 apb1lpenr;
     __vo u32 apb2lpenr;
+    __vo u32 reserved5[2];
     __vo u32 bdcr;
     __vo u32 csr;
+    __vo u32 reserved6;
     __vo u32 sscgr;
     __vo u32 plli2scfgr;
 } RCC_RegDef_t;
@@ -199,6 +206,18 @@ typedef struct {
 #define GPIOH_PCLK_DI()     (RCC->ahb1enr &= ~(1 << 7))
 #define GPIOI_PCLK_DI()     (RCC->ahb1enr &= ~(1 << 8))
 
+/*
+ * macros to reset GPIOx peripherals
+ * */
+#define GPIOA_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 0)); (RCC->ahb1rstr &= ~(1 << 0));}while(0)
+#define GPIOB_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 1)); (RCC->ahb1rstr &= ~(1 << 1));}while(0)
+#define GPIOC_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 2)); (RCC->ahb1rstr &= ~(1 << 2));}while(0)
+#define GPIOD_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 3)); (RCC->ahb1rstr &= ~(1 << 3));}while(0)
+#define GPIOE_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 4)); (RCC->ahb1rstr &= ~(1 << 4));}while(0)
+#define GPIOF_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 5)); (RCC->ahb1rstr &= ~(1 << 5));}while(0)
+#define GPIOG_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 6)); (RCC->ahb1rstr &= ~(1 << 6));}while(0)
+#define GPIOH_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 7)); (RCC->ahb1rstr &= ~(1 << 7));}while(0)
+#define GPIOI_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 8)); (RCC->ahb1rstr &= ~(1 << 8));}while(0)
 
 /*
  * Clock enable maros for I2C peripherals
