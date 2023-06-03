@@ -108,7 +108,8 @@ void hal_gpio_toggleOutputPin(GPIO_RegDef_t *pGPIOx, u8 pin_number);
 /*
  * IRQ configuration and isr handling
  * */
-void hal_gpio_irqConfig(u8 irq_number, u8 irq_priority, u8 EnorDi);
+void hal_gpio_irqInterruptConfig(u8 irq_number, u8 permission);
+void hal_gpio_irqPriorityConfig(u8 irq_number, u8 irq_priority);
 void hal_gpio_irqHandling(u8 pin_number);
 
 #endif

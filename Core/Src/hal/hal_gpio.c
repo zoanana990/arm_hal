@@ -102,8 +102,7 @@ void hal_gpio_periClockControl(GPIO_RegDef_t *pGPIOx, u8 permission)
 
 /************************************************************************
  * @fn             - hal_gpio_init
- * @brief          - This function enables or disables peripheral clock
- *                   for the given gpio port
+ * @brief          -
  * @param[in]      - pGPIOHandle
  * @return         - none
  * @note           - none
@@ -147,6 +146,12 @@ void hal_gpio_init(GPIO_Handle_t *pGPIOHandle)
         }
 
         /* Configure the GPIO port selection in SYSCFG_EXTICR */
+        u8 index, bit, portcode;
+        index = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+        bit = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+        portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+        SYSCFG_PCLK_EN();
+        SYSCFG->exticr[index] = portcode << (bit * 4);
 
         /* Enable the exti interrupt delivery using IMR */
         EXTI->imr |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
@@ -265,7 +270,7 @@ void hal_gpio_toggleOutputPin(GPIO_RegDef_t *pGPIOx, u8 pin_number)
  * IRQ configuration and isr handling
  * */
 
-/*
+/**
  * GPIO pin interrupt configuration
  * 1. Pin must be input configuration
  * 2. Configure the edge trigger (RT, FT, RFT)
@@ -275,9 +280,55 @@ void hal_gpio_toggleOutputPin(GPIO_RegDef_t *pGPIOx, u8 pin_number)
  * 6. Enable interrupt reception on that IRQ number
  * 7. Implement IRQ number
  * */
-void hal_gpio_irqConfig(u8 irq_number, u8 irq_priority, u8 EnorDi)
+void hal_gpio_irqInterruptConfig(u8 irq_number, u8 permission)
 {
+    if(permission == ENABLE)
+    {
+        if(irq_number <= 31)
+        {
+            /* use ISER0 register */
+            *NVIC_ISER0 |= (1 << irq_number);
+        }
+        else if(irq_number > 31 && irq_number < 64)
+        {
+            /* use ISER1 register */
+            *NVIC_ISER1 |= (1 << (irq_number % 32));
+        }
+        else if(irq_number >= 64 && irq_number < 96)
+        {
+            /* use ISER2 register */
+            *NVIC_ISER2 |= (1 << (irq_number % 64));
+        }
+    }
+    else
+    {
+        if(irq_number <= 31)
+        {
+            /* use ICER0 register */
+            *NVIC_ICER0 |= (1 << irq_number);
+        }
+        else if(irq_number > 31 && irq_number < 64)
+        {
+            /* use ICER1 register */
+            *NVIC_ICER1 |= (1 << (irq_number % 32));
+        }
+        else if(irq_number >= 64 && irq_number < 96)
+        {
+            /* use ICER2 register */
+            *NVIC_ICER2 |= (1 << (irq_number % 64));
+        }
+    }
+}
 
+void hal_gpio_irqPriorityConfig(u8 irq_number, u8 irq_priority)
+{
+    /* first, find out the ipr register */
+    u8 iprx = irq_number / 4;
+    u8 iprx_section = irq_number % 4;
+
+    u8 shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+    *(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (irq_priority << shift_amount);
 }
 
 void hal_gpio_irqHandling(u8 pin_number)

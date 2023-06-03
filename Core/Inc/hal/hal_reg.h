@@ -15,6 +15,39 @@
 #define GPIO_PIN_SET                SET
 #define GPIO_PIN_RESET              RESET
 
+/************************************* Processor Specific **************************************
+ * ARM Cortex M4 Processor NVIC ISERx register address
+ * */
+#define NVIC_ISER0                  ((__vo u32 *) 0xE000E100)
+#define NVIC_ISER1                  ((__vo u32 *) 0xE000E104)
+#define NVIC_ISER2                  ((__vo u32 *) 0xE000E108)
+#define NVIC_ISER3                  ((__vo u32 *) 0xE000E10C)
+#define NVIC_ISER4                  ((__vo u32 *) 0xE000E110)
+#define NVIC_ISER5                  ((__vo u32 *) 0xE000E114)
+#define NVIC_ISER6                  ((__vo u32 *) 0xE000E118)
+#define NVIC_ISER7                  ((__vo u32 *) 0xE000E11C)
+
+/*
+ * ARM Cortex M4 Processor NVIC ICER register address
+ * */
+#define NVIC_ICER0                  ((__vo u32 *) 0xE000E180)
+#define NVIC_ICER1                  ((__vo u32 *) 0xE000E184)
+#define NVIC_ICER2                  ((__vo u32 *) 0xE000E188)
+#define NVIC_ICER3                  ((__vo u32 *) 0xE000E18C)
+#define NVIC_ICER4                  ((__vo u32 *) 0xE000E190)
+#define NVIC_ICER5                  ((__vo u32 *) 0xE000E194)
+#define NVIC_ICER6                  ((__vo u32 *) 0xE000E198)
+#define NVIC_ICER7                  ((__vo u32 *) 0xE000E19C)
+
+/*
+ * ARM Cortex M4 Processor NVIC IPR register address
+ * */
+#define NVIC_PR_BASE_ADDR           ((__vo u32 *) 0xE000E400)
+
+#define NO_PR_BITS_IMPLEMENTED      4
+
+/********************************** End of Processor Specific **********************************
+ * */
 /*
  * Memory map
  * */
@@ -213,6 +246,8 @@ typedef struct {
 
 #define EXTI                ((EXTI_RegDef_t *) EXTI_BASEADDR)
 
+#define SYSCFG              ((SYSCFG_RegDef_t *) SYSCFG_BASEADDR)
+
 /*
  * Clock enable macros for GPIO peripherals
  * */
@@ -252,6 +287,16 @@ typedef struct {
 #define GPIOH_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 7)); (RCC->ahb1rstr &= ~(1 << 7));}while(0)
 #define GPIOI_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 8)); (RCC->ahb1rstr &= ~(1 << 8));}while(0)
 
+#define GPIO_BASEADDR_TO_CODE(x) ((x == GPIOA) ? 0 : \
+                                  (x == GPIOB) ? 1 : \
+                                  (x == GPIOC) ? 2 : \
+                                  (x == GPIOD) ? 3 : \
+                                  (x == GPIOE) ? 4 : \
+                                  (x == GPIOF) ? 5 : \
+                                  (x == GPIOG) ? 6 : \
+                                  (x == GPIOH) ? 7 : \
+                                  (x == GPIOI) ? 8 : -1 )
+
 /*
  * Clock enable maros for I2C peripherals
  * */
@@ -261,5 +306,22 @@ typedef struct {
  * Clock enable maros for SPI peripherals
  * */
 #define SPI1_PCLK_EN()     (RCC->apb1enr |= (1 << 12))
+
+/*
+ * Clock enable macros for syscfg
+ * */
+#define SYSCFG_PCLK_EN()   (RCC->apb2enr |= (1 << 14))
+
+/* IRQ (Interrupt request) numbers of STM32F4 MCU
+ * Note: update these macros with valid values according to your mcu
+ * TODO: complete this list for other peripherals
+ * */
+#define IRQ_NO_EXTI0            6
+#define IRQ_NO_EXTI1            7
+#define IRQ_NO_EXTI2            8
+#define IRQ_NO_EXTI3            9
+#define IRQ_NO_EXTI4            10
+#define IRQ_NO_EXTI9_5          23
+#define IRQ_NO_EXTI15_10        40
 
 #endif

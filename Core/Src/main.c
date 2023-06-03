@@ -29,7 +29,7 @@ int main(void)
     GpioBtn.GPIO_PinConfig.GPIO_PinPupdControl = HAL_GPIO_NO_PUPD;
 
     hal_gpio_periClockControl(GPIOA, ENABLE);
-    hal_gpio_init(&GpioLed);
+    hal_gpio_init(&GpioBtn);
 
     while(1)
     {
