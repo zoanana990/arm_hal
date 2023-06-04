@@ -90,3 +90,10 @@ number od 1s, when counted including the parity bit
 - The RXNE bit must be cleared by reading the data register, 
   before the end of the reception of the character to avoid the overrun error
 
+## Oversampling
+- The receiver implements different user-configurable oversampling techniques (except in synchronous
+  mode) for data recovery by discriminating between valid incoming data and noise
+- The oversampling method can be selected by programming the OVER8 bit in the USART_CR1 register and
+  can be either 16 or 8 times the baud rate clock
+- Configurable oversampling method by 16 or by 8 to give flexibility between speed and clock tolerance
+- We can see the NF flags to get the noise 
