@@ -167,6 +167,7 @@ void hal_usart_init(USART_Handle_t *pUSARTHandle)
 
     //Implement the code to configure the baud rate
     //We will cover this in the lecture. No action required here 
+    hal_usart_setBaudRate(pUSARTHandle->pUSARTx, pUSARTHandle->USART_Config.USART_Baud);
 }
 
 void hal_usart_deinit(USART_RegDef_t *pUSARTx)
@@ -181,10 +182,10 @@ void hal_usart_SendData(USART_Handle_t *pUSARTHandle, u8 *pTxBuffer, u32 Len)
 {
     u16 *pdata;
     
-    //Loop over until "Len" number of bytes are transferred
+    /* Loop over until "Len" number of bytes are transferred */
 	for(u32 i = 0 ; i < Len; i++)
 	{
-		//Implement the code to wait until TXE flag is set in the SR
+		/* Implement the code to wait until TXE flag is set in the SR */
 		while(!hal_usart_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAGS_TXE));
 
          //Check the USART_WordLength item for 9BIT or 8BIT in a frame
@@ -220,7 +221,19 @@ void hal_usart_SendData(USART_Handle_t *pUSARTHandle, u8 *pTxBuffer, u32 Len)
 	}
 
 	//Implement the code to wait till TC flag is set in the SR
-	while( ! hal_usart_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAGS_TC));
+	while(!hal_usart_GetFlagStatus(pUSARTHandle->pUSARTx, USART_FLAGS_TC));
+}
+
+void hal_usart_peripheralControl(USART_RegDef_t *pUSARTx, u8 cmd)
+{
+    if(cmd == ENABLE)
+    {
+        pUSARTx->cr1 |= (1 << 13);
+    }
+    else
+    {
+        pUSARTx->cr1 &= ~(1 << 13);
+    }
 }
 
 void hal_usart_ReceiveData(USART_Handle_t *pUSARTHandle, u8 *pRxBuffer, u32 Len)
@@ -271,7 +284,6 @@ void hal_usart_ReceiveData(USART_Handle_t *pUSARTHandle, u8 *pRxBuffer, u32 Len)
 				//Parity is used, so , 7 bits will be of user data and 1 bit is parity
 				//read only 7 bits , hence mask the DR with 0X7F
 				 *pRxBuffer = (u8) pUSARTHandle->pUSARTx->dr & (u8) 0x7F;
-
 			}
 
 			//increment the pRxBuffer
@@ -296,7 +308,6 @@ u8 hal_usart_SendDataIT(USART_Handle_t *pUSARTHandle, u8 *pTxBuffer, u32 Len)
 		//Implement the code to enable interrupt for TC 
 		pUSARTHandle->pUSARTx->cr1 |= (1 << HAL_USART_CR1_TCIE);
 	}
-
 	return txstate;
 }
 
@@ -320,14 +331,24 @@ u8 hal_usart_ReceiveDataIT(USART_Handle_t *pUSARTHandle, u8 *pRxBuffer, u32 Len)
 /*
  * IRQ Configuration and ISR handling
  */
-void hal_usart_IRQInterruptConfig(u8 IRQNumber, u8 EnorDi);
-void hal_usart_IRQPriorityConfig(u8 IRQNumber, u32 IRQPriority);
-void hal_usart_IRQHandling(USART_Handle_t *pHandle);
+void hal_usart_IRQInterruptConfig(u8 IRQNumber, u8 permission)
+{
+
+}
+
+void hal_usart_IRQPriorityConfig(u8 irq_number, u32 irq_priority)
+{
+
+}
+
+void hal_usart_IRQHandling(USART_Handle_t *pHandle)
+{
+
+}
 
 /*
  * Other Peripheral Control APIs
  */
-void hal_usart_PeripheralControl(USART_RegDef_t *pUSARTx, u8 EnOrDi);
 
 /************************************************************************
  * @fn             - hal_hal_usart_GetFlagStatus
@@ -337,7 +358,7 @@ void hal_usart_PeripheralControl(USART_RegDef_t *pUSARTx, u8 EnOrDi);
  * @return         - 1 as the flag is Set, 0 as cleared
  * @note           - none
  ************************************************************************/
-u8 hal_hal_usart_GetFlagStatus(USART_RegDef_t *pUSARTx , u32 FlagName)
+u8 hal_usart_GetFlagStatus(USART_RegDef_t *pUSARTx , u32 FlagName)
 {
     return pUSARTx->sr & FlagName ? 1 : 0;
 }
@@ -361,4 +382,64 @@ void hal_usart_ClearFlag(USART_RegDef_t *pUSARTx, u16 StatusFlagName)
 void hal_usart_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, u8 AppEv)
 {
 
+}
+
+void hal_usart_setBaudRate(USART_RegDef_t *pUSARTx, u32 baudrate)
+{
+    //Variable to hold the APB clock
+    u32 PCLKx;
+    u32 usartdiv;
+
+    //variables to hold Mantissa and Fraction values
+    u32 M_part,F_part;
+    u32 tempreg = 0;
+
+    //Get the value of APB bus clock in to the variable PCLKx
+    if(pUSARTx == USART1 || pUSARTx == USART6)
+    {
+        //USART1 and USART6 are hanging on APB2 bus
+        PCLKx = hal_rcc_getPclk2Value();
+    }else
+    {
+        PCLKx = hal_rcc_getPclk1Value();
+    }
+
+    //Check for OVER8 configuration bit
+    if(pUSARTx->cr1 & (1 << HAL_USART_CR1_OVER8))
+    {
+        //OVER8 = 1 , over sampling by 8
+        usartdiv = ((25 * PCLKx) / (2 * baudrate));
+    }else
+    {
+        //over sampling by 16
+        usartdiv = ((25 * PCLKx) / (16 * baudrate));
+    }
+
+    //Calculate the Mantissa part
+    M_part = usartdiv / 100;
+
+    //Place the Mantissa part in appropriate bit position . refer USART_BRR
+    tempreg |= M_part << 4;
+
+    //Extract the fraction partƒ
+    F_part = (usartdiv - (M_part * 100));
+
+    //Calculate the final fractional
+    if(pUSARTx->cr1 & ( 1 << HAL_USART_CR1_OVER8))
+    {
+        //OVER8 = 1 , over sampling by 8
+        F_part = ((( F_part * 8) + 50) / 100)& ((u8) 0x07);
+
+    }else
+    {
+        //over sampling by 16
+        F_part = ((( F_part * 16) + 50) / 100) & ((u8) 0x0F);
+
+    }
+
+    //Place the fractional part in appropriate bit position . refer USART_BRR
+    tempreg |= F_part;
+
+    //copy the value of tempreg in to BRR register
+    pUSARTx->brr = tempreg;
 }

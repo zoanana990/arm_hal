@@ -225,7 +225,7 @@ void hal_usart_IRQHandling(USART_Handle_t *pHandle);
 /*
  * Other Peripheral Control APIs
  */
-void hal_usart_PeripheralControl(USART_RegDef_t *pUSARTx, u8 EnOrDi);
+void hal_usart_peripheralControl(USART_RegDef_t *pUSARTx, u8 cmd);
 u8 hal_usart_GetFlagStatus(USART_RegDef_t *pUSARTx , u32 FlagName);
 void hal_usart_ClearFlag(USART_RegDef_t *pUSARTx, u16 StatusFlagName);
 
@@ -233,5 +233,8 @@ void hal_usart_ClearFlag(USART_RegDef_t *pUSARTx, u16 StatusFlagName);
  * Application callback
  */
 void hal_usart_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, u8 AppEv);
+
+
+void hal_usart_setBaudRate(USART_RegDef_t *pUSARTx, u32 baudrate);
 
 #endif
