@@ -1,44 +1,55 @@
 #include <hal/hal_reg.h>
 #include <hal/hal_gpio.h>
+#include <hal/hal_uart.h>
+#include <string.h>
 
-#define HIGH            1
-#define BTN_PRESSED     HIGH
+#define HIGH                    1
+#define BTN_PRESSED             HIGH
 
-void delay(void)
+c8 msg[1024] = "HAPPY USART DAY ... \n\r";
+
+USART_Handle_t usart2_handle;
+
+void USART2_init(void)
 {
-    for(u32 i = 0; i < 500000/2; i++);
+    usart2_handle.pUSARTx = USART2;
+    usart2_handle.USART_Config.USART_Baud = USART_STD_BAUD_115200;
+    usart2_handle.USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
+    usart2_handle.USART_Config.USART_Mode = USART_MODE_ONLY_TX;
+    usart2_handle.USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+    usart2_handle.USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
+    usart2_handle.USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
+    hal_usart_init(&usart2_handle);
+}
+
+void USART2_GPIO_init(void)
+{
+    GPIO_Handle_t usart_gpio;
+    usart_gpio.pGPIOx = GPIOA;
+    usart_gpio.GPIO_PinConfig.GPIO_PinMode = HAL_GPIO_MODE_ALTEN;
+    usart_gpio.GPIO_PinConfig.GPIO_PinOpType = HAL_GPIO_OP_TYPE_PP;
+    usart_gpio.GPIO_PinConfig.GPIO_PinPupdControl = HAL_GPIO_PU;
+    usart_gpio.GPIO_PinConfig.GPIO_PinSpeed = HAL_GPIO_SPEED_HIGH;
+    usart_gpio.GPIO_PinConfig.GPIO_PinAltFunc = 7;
+
+    /* usart2 TX */
+    usart_gpio.GPIO_PinConfig.GPIO_PinNumber = HAL_GPIO_PIN_2;
+    hal_gpio_init(&usart_gpio);
+
+    /* usart2 RX */
+    usart_gpio.GPIO_PinConfig.GPIO_PinNumber = HAL_GPIO_PIN_3;
+    hal_gpio_init(&usart_gpio);
 }
 
 int main(void)
 {
-    GPIO_Handle_t GpioLed, GpioBtn;
-    GpioLed.pGPIOx = GPIOG;
-    GpioLed.GPIO_PinConfig.GPIO_PinNumber = HAL_GPIO_PIN_13;
-    GpioLed.GPIO_PinConfig.GPIO_PinMode = HAL_GPIO_MODE_OUT;
-    GpioLed.GPIO_PinConfig.GPIO_PinSpeed = HAL_GPIO_SPEED_HIGH;
-    GpioLed.GPIO_PinConfig.GPIO_PinOpType = HAL_GPIO_OP_TYPE_PP;
-    GpioLed.GPIO_PinConfig.GPIO_PinPupdControl = HAL_GPIO_NO_PUPD;
+    USART2_GPIO_init();
+    USART2_init();
+    hal_usart_peripheralControl(USART2, ENABLE);
+    hal_usart_SendData(&usart2_handle, (u8 *)msg, strlen(msg));
 
-    hal_gpio_periClockControl(GPIOG, ENABLE);
-    hal_gpio_init(&GpioLed);
 
-    GpioBtn.pGPIOx = GPIOA;
-    GpioBtn.GPIO_PinConfig.GPIO_PinNumber = HAL_GPIO_PIN_0;
-    GpioBtn.GPIO_PinConfig.GPIO_PinMode = HAL_GPIO_MODE_IN;
-    GpioBtn.GPIO_PinConfig.GPIO_PinSpeed = HAL_GPIO_SPEED_HIGH;
-    GpioBtn.GPIO_PinConfig.GPIO_PinPupdControl = HAL_GPIO_NO_PUPD;
-
-    hal_gpio_periClockControl(GPIOA, ENABLE);
-    hal_gpio_init(&GpioBtn);
-
-    while(1)
-    {
-        if(BTN_PRESSED == hal_gpio_readFromInputPin(GPIOA, HAL_GPIO_PIN_0))
-        {
-            delay();
-            hal_gpio_toggleOutputPin(GPIOG, HAL_GPIO_PIN_13);
-        }
-    }
+    while(1);
     return 0;
 }
 
