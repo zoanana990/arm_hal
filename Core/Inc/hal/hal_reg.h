@@ -254,11 +254,15 @@ typedef struct
 #define GPIOK               ((GPIO_RegDef_t *)GPIOK_BASEADDR)
 
 #define RCC                 ((RCC_RegDef_t *) RCC_BASEADDR)
-
 #define EXTI                ((EXTI_RegDef_t *) EXTI_BASEADDR)
-
 #define SYSCFG              ((SYSCFG_RegDef_t *) SYSCFG_BASEADDR)
 
+#define USART1              ((USART_RegDef_t *) USART1_BASEADDR)
+#define USART2              ((USART_RegDef_t *) USART2_BASEADDR)
+#define USART3              ((USART_RegDef_t *) USART3_BASEADDR)
+#define UART4               ((USART_RegDef_t *) UART4_BASEADDR)
+#define UART5               ((USART_RegDef_t *) UART5_BASEADDR)
+#define USART6              ((USART_RegDef_t *) USART6_BASEADDR)
 /************************************ GPIO CLOCK MACROs ***********************************/
 /*
  * Clock enable macros for GPIO peripherals
@@ -324,12 +328,30 @@ typedef struct
 /************************************ USART CLOCK MACROs ***********************************/
 /*
  * Clock enable macros for usart peripherals
+ * Notice:
+ *  USART1, USART6 connect to APB2 bus
+ *  USART2, USART3, UART4, UART5 connect to APB1 bus
  * */
-#define USART1_PCLK_EN()     (RCC->ahb1enr |= (1 << 0))
+#define USART1_PCLK_EN()     (RCC->apb2enr |= (1 << 4))
+#define USART2_PCLK_EN()     (RCC->apb1enr |= (1 << 17))
+#define USART3_PCLK_EN()     (RCC->apb1enr |= (1 << 18))
+#define UART4_PCLK_EN()      (RCC->apb1enr |= (1 << 19))
+#define UART5_PCLK_EN()      (RCC->apb1enr |= (1 << 20))
+#define USART6_PCLK_EN()     (RCC->apb2enr |= (1 << 5))
 
-#define USART1_PCLK_DI()     (RCC->ahb1enr &= ~(1 << 0))
+#define USART1_PCLK_DI()     (RCC->apb2enr &= ~(1 << 4))
+#define USART2_PCLK_DI()     (RCC->apb1enr &= ~(1 << 17))
+#define USART3_PCLK_DI()     (RCC->apb1enr &= ~(1 << 18))
+#define UART4_PCLK_DI()      (RCC->apb1enr &= ~(1 << 19))
+#define UART5_PCLK_DI()      (RCC->apb1enr &= ~(1 << 20))
+#define USART6_PCLK_DI()     (RCC->apb2enr &= ~(1 << 5))
 
-#define GPIOA_REG_RESET()   do{(RCC->ahb1rstr |= (1 << 0)); (RCC->ahb1rstr &= ~(1 << 0));}while(0)
+#define USART1_REG_RESET()   do{USART1_PCLK_EN(); USART1_PCLK_DI();}while(0)
+#define USART2_REG_RESET()   do{USART2_PCLK_EN(); USART2_PCLK_DI();}while(0)
+#define USART3_REG_RESET()   do{USART3_PCLK_EN(); USART3_PCLK_DI();}while(0)
+#define UART4_REG_RESET()    do{UART4_PCLK_EN(); UART4_PCLK_DI();}while(0)
+#define UART5_REG_RESET()    do{UART5_PCLK_EN(); UART5_PCLK_DI();}while(0)
+#define USART6_REG_RESET()   do{USART6_PCLK_EN(); USART6_PCLK_DI();}while(0)
 
 
 /*
