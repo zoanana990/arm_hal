@@ -22,6 +22,8 @@
     - `n`, next, this kind of next will not get into the sub-function
     - `u`, until, `u 16` represent that execute until line 16th
     - `p`, print, `p tmp`, display the value
+      - `p $pc`, display the value of program counter
+    - `set`, set value, `set $pc=0x8000000` set the program counter to the address
     - `bt`, see the stack and heap
     - `x`, see the de-reference of address. That is, see the `*(pointer)` by using `x pointer`
       - example 1, show a value in the address
@@ -39,5 +41,5 @@
         ```
 3. write image to the flash
    ```shell
-   monitor flash write_image erase build/STM32F4.elf
+   monitor flash write_image erase build/stm32f429.elf
    ```

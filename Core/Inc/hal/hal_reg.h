@@ -12,13 +12,13 @@
 #define __Vendor_SysTickConfig    0U       /*!< Set to 1 if different SysTick Config is used  */
 #define __FPU_PRESENT             1U       /*!< FPU present                                   */
 
-#define  __I     volatile const       /*!< Defines 'read only' permissions */
-#define  __O     volatile             /*!< Defines 'write only' permissions */
-#define  __IO    volatile             /*!< Defines 'read / write' permissions */
+#define  __I     volatile const            /*!< Defines 'read only' permissions */
+#define  __O     volatile                  /*!< Defines 'write only' permissions */
+#define  __IO    volatile                  /*!< Defines 'read / write' permissions */
 
 /* following defines should be used for structure members */
-#define  __IM     volatile const      /*! Defines 'read only' structure member permissions */
-#define  __OM     volatile            /*! Defines 'write only' structure member permissions */
+#define  __IM     volatile const           /*! Defines 'read only' structure member permissions */
+#define  __OM     volatile                 /*! Defines 'write only' structure member permissions */
 #define  __IOM    volatile            /*! Defines 'read / write' structure member permissions */
 
 /**
@@ -233,9 +233,9 @@ typedef struct
 typedef struct
 {
     __IO u32 DR;         /*!< CRC Data register,             Address offset: 0x00 */
-    __IO uint8_t  IDR;        /*!< CRC Independent data register, Address offset: 0x04 */
-    uint8_t       RESERVED0;  /*!< Reserved, 0x05                                      */
-    uint16_t      RESERVED1;  /*!< Reserved, 0x06                                      */
+    __IO u8  IDR;        /*!< CRC Independent data register, Address offset: 0x04 */
+    u8       RESERVED0;  /*!< Reserved, 0x05                                      */
+    u16      RESERVED1;  /*!< Reserved, 0x06                                      */
     __IO u32 CR;         /*!< CRC Control register,          Address offset: 0x08 */
 } CRC_RegDef_t;
 
@@ -306,7 +306,7 @@ typedef struct
     __IO u32 FCR;    /*!< DMA stream x FIFO control register       */
 } DMA_Stream_RegDef_t;
 
-RegDef_t struct
+typedef struct
 {
     __IO u32 LISR;   /*!< DMA low interrupt status register,      Address offset: 0x00 */
     __IO u32 HISR;   /*!< DMA high interrupt status register,     Address offset: 0x04 */
@@ -1237,25 +1237,7 @@ typedef struct
 #define USB_OTG_FS          ((USB_OTG_GlobalRegDef_t *) USB_OTG_FS_PERIPH_BASE)
 #define USB_OTG_HS          ((USB_OTG_GlobalRegDef_t *) USB_OTG_HS_PERIPH_BASE)
 
-/**
-  * @}
-  */
-
-/** @addtogroup Exported_constants
-  * @{
-  */
-
-/** @addtogroup Hardware_Constant_Definition
-  * @{
-  */
 #define LSI_STARTUP_TIME                40U /*!< LSI Maximum startup time in us */
-/**
-  * @}
-  */
-
-  /** @addtogroup Peripheral_Registers_Bits_Definition
-  * @{
-  */
     
 /******************************************************************************/
 /*                         Peripheral Registers_Bits_Definition               */
@@ -11541,6 +11523,7 @@ typedef struct
 #define RCC_DCKCFGR_PLLSAIDIVQ_2          (0x04UL << RCC_DCKCFGR_PLLSAIDIVQ_Pos) /*!< 0x00000400 */
 #define RCC_DCKCFGR_PLLSAIDIVQ_3          (0x08UL << RCC_DCKCFGR_PLLSAIDIVQ_Pos) /*!< 0x00000800 */
 #define RCC_DCKCFGR_PLLSAIDIVQ_4          (0x10UL << RCC_DCKCFGR_PLLSAIDIVQ_Pos) /*!< 0x00001000 */
+
 #define RCC_DCKCFGR_PLLSAIDIVR_Pos        (16U)                               
 #define RCC_DCKCFGR_PLLSAIDIVR_Msk        (0x3UL << RCC_DCKCFGR_PLLSAIDIVR_Pos) /*!< 0x00030000 */
 #define RCC_DCKCFGR_PLLSAIDIVR            RCC_DCKCFGR_PLLSAIDIVR_Msk         

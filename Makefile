@@ -35,6 +35,7 @@ MCU = $(CPU) -mthumb
 
 # C defines
 C_DEFS =  \
+-DSTM32F429
 
 # C includes
 C_INCLUDES =  \
