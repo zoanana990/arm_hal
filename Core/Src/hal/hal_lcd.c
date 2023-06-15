@@ -35,6 +35,22 @@
 #define HAL_LCD_DCX_HIGH()      HAL_REG_SET_BIT(HAL_LCD_WRX_DCX_PORT->ODR, HAL_LCD_WRX_DCX_PIN);
 #define HAL_LCD_DCX_LOW()       HAL_REG_CLR_BIT(HAL_LCD_WRX_DCX_PORT->ODR, HAL_LCD_WRX_DCX_PIN);
 
+GPIO_RegDef_t *hal_ltdc_io_port[] = {
+    HAL_LCD_DATA_R2_PORT,
+    HAL_LCD_DATA_R3_PORT,
+};
+
+const u8 ltdc_pins[] = {
+    HAL_LCD_DATA_R2_PIN,
+    HAL_LCD_DATA_R3_PIN,
+};
+
+#define HAL_LCD_TOTAL_PINS      (sizeof(ltdc_pins) / sizeof(ltdc_pins))
+const u8 total_ltdc_pins = HAL_LCD_TOTAL_PINS;
+
+void _HAL_LCD_writeCmd(u8 cmd);
+void _HAL_LCD_writeData(u8 *buf, u32 len);
+
 void delay(void)
 {
     u32 wait = 0xFFFF * 20;
@@ -146,84 +162,84 @@ void HAL_LCD_Reset(void)
 void HAL_LCD_Config(void)
 {
     u8 params[15];
-    HAL_LCD_writeCmd(ILI9341_SWRESET);
-    HAL_LCD_writeCmd(ILI9341_POWERB);
+    _HAL_LCD_writeCmd(ILI9341_SWRESET);
+    _HAL_LCD_writeCmd(ILI9341_POWERB);
     params[0] = 0x00;
     params[1] = 0xD9;
     params[2] = 0x30;
-    HAL_LCD_writeData(params, 3);
+    _HAL_LCD_writeData(params, 3);
 
-    HAL_LCD_writeCmd(ILI9341_POWER_SEQ);
+    _HAL_LCD_writeCmd(ILI9341_POWER_SEQ);
     params[0]= 0x64;
     params[1]= 0x03;
     params[2]= 0X12;
     params[3]= 0X81;
-    HAL_LCD_writeData(params, 4);
+    _HAL_LCD_writeData(params, 4);
 
-    HAL_LCD_writeCmd(ILI9341_DTCA);
+    _HAL_LCD_writeCmd(ILI9341_DTCA);
     params[0]= 0x85;
     params[1]= 0x10;
     params[2]= 0x7A;
-    HAL_LCD_writeData(params, 3);
+    _HAL_LCD_writeData(params, 3);
 
-    HAL_LCD_writeCmd(ILI9341_POWERA);
+    _HAL_LCD_writeCmd(ILI9341_POWERA);
     params[0]= 0x39;
     params[1]= 0x2C;
     params[2]= 0x00;
     params[3]= 0x34;
     params[4]= 0x02;
-    HAL_LCD_writeData(params, 5);
+    _HAL_LCD_writeData(params, 5);
 
-    HAL_LCD_writeCmd(ILI9341_PRC);
+    _HAL_LCD_writeCmd(ILI9341_PRC);
     params[0]= 0x20;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_DTCB);
+    _HAL_LCD_writeCmd(ILI9341_DTCB);
     params[0]= 0x00;
     params[1]= 0x00;
-    HAL_LCD_writeData(params, 2);
+    _HAL_LCD_writeData(params, 2);
 
-    HAL_LCD_writeCmd(ILI9341_POWER1);
+    _HAL_LCD_writeCmd(ILI9341_POWER1);
     params[0]= 0x1B;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_POWER2);
+    _HAL_LCD_writeCmd(ILI9341_POWER2);
     params[0]= 0x12;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_VCOM1);
+    _HAL_LCD_writeCmd(ILI9341_VCOM1);
     params[0]= 0x08;
     params[1]= 0x26;
-    HAL_LCD_writeData(params, 2);
+    _HAL_LCD_writeData(params, 2);
 
-    HAL_LCD_writeCmd(ILI9341_VCOM2);
+    _HAL_LCD_writeCmd(ILI9341_VCOM2);
     params[0]= 0XB7;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
 
-    HAL_LCD_writeCmd(ILI9341_PIXEL_FORMAT);
+    _HAL_LCD_writeCmd(ILI9341_PIXEL_FORMAT);
     params[0]= 0x55; //select RGB565
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_FRMCTR1);
+    _HAL_LCD_writeCmd(ILI9341_FRMCTR1);
     params[0]= 0x00;
     params[1]= 0x1B;//frame rate = 70
-    HAL_LCD_writeData(params, 2);
+    _HAL_LCD_writeData(params, 2);
 
-    HAL_LCD_writeCmd(ILI9341_DFC);    // Display Function Control
+    _HAL_LCD_writeCmd(ILI9341_DFC);    // Display Function Control
     params[0]= 0x0A;
     params[1]= 0xA2;
-    HAL_LCD_writeData(params, 2);
+    _HAL_LCD_writeData(params, 2);
 
-    HAL_LCD_writeCmd(ILI9341_3GAMMA_EN);    // 3Gamma Function Disable
+    _HAL_LCD_writeCmd(ILI9341_3GAMMA_EN);    // 3Gamma Function Disable
     params[0]= 0x02;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_GAMMA);
+    _HAL_LCD_writeCmd(ILI9341_GAMMA);
     params[0]= 0x01;
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_PGAMMA);    //Set Gamma
+    _HAL_LCD_writeCmd(ILI9341_PGAMMA);    //Set Gamma
     params[0]= 0x0F;
     params[1]= 0x1D;
     params[2]= 0x1A;
@@ -239,9 +255,9 @@ void HAL_LCD_Config(void)
     params[12]= 0x09;
     params[13]= 0x05;
     params[14]= 0x04;
-    HAL_LCD_writeData(params, 15);
+    _HAL_LCD_writeData(params, 15);
 
-    HAL_LCD_writeCmd(ILI9341_NGAMMA);
+    _HAL_LCD_writeCmd(ILI9341_NGAMMA);
     params[0]= 0x00;
     params[1]= 0x18;
     params[2]= 0x1D;
@@ -257,25 +273,25 @@ void HAL_LCD_Config(void)
     params[12]= 0x2E;
     params[13]= 0x2F;
     params[14]= 0x05;
-    HAL_LCD_writeData(params, 15);
+    _HAL_LCD_writeData(params, 15);
 
-    HAL_LCD_writeCmd(ILI9341_RGB_INTERFACE);
+    _HAL_LCD_writeCmd(ILI9341_RGB_INTERFACE);
     params[0] = 0xC2; //Data is fetched during falling edge of DOTCLK
-    HAL_LCD_writeData(params, 1);
+    _HAL_LCD_writeData(params, 1);
 
-    HAL_LCD_writeCmd(ILI9341_INTERFACE);
+    _HAL_LCD_writeCmd(ILI9341_INTERFACE);
     params[0] = 0x00;
     params[1] = 0x00;
     params[2] = 0x06;
-    HAL_LCD_writeData(params, 3);
+    _HAL_LCD_writeData(params, 3);
 
-    HAL_LCD_writeCmd(ILI9341_SLEEP_OUT); //Exit Sleep
+    _HAL_LCD_writeCmd(ILI9341_SLEEP_OUT); //Exit Sleep
     delay();
     delay();
-    HAL_LCD_writeCmd(ILI9341_DISPLAY_ON); //display on
+    _HAL_LCD_writeCmd(ILI9341_DISPLAY_ON); //display on
 }
 
-void HAL_LCD_writeCmd(u8 cmd)
+void _HAL_LCD_writeCmd(u8 cmd)
 {
     SPI_RegDef_t *pSPI = HAL_LCD_SPI;
     HAL_LCD_CSX_LOW();
@@ -288,7 +304,7 @@ void HAL_LCD_writeCmd(u8 cmd)
     HAL_LCD_DCX_HIGH();
 }
 
-void HAL_LCD_writeData(u8 *buf, u32 len)
+void _HAL_LCD_writeData(u8 *buf, u32 len)
 {
     SPI_RegDef_t *pSPI = HAL_LCD_SPI;
     for(int i = 0; i < len; i++)
