@@ -21,12 +21,12 @@ The processor is actually not involved. LTCD does that.
 - MIPI DBI (Display Bus Interface / MCU interface)
 - MIPI DSI (Display Serial Interface)
 
-MIPI (Mobile Industry Processor Interface) Alliance
+### MIPI (Mobile Industry Processor Interface) Alliance
 - MIPI Alliance develops interface specifications for mobile and mobile-influenced devices
 - In the mobile industry, companies use MIPI alliance specifications when developing smartphone,
   tablets, laptops, and hybrid devices
 
-MIPI DIP
+### MIPI DIP
 - This is also called as RGB interface
 - Applies to display which uses 16/18/24-bit data lines and control signals
 - The MIPI DPI specification standardizes the data and control signals to be used by manufacturers of
@@ -36,7 +36,7 @@ MIPI DIP
 - The host processor interface must implement a 24-bit data width and accompanying control and timing
   signals. The host processor must be capable of transferring data as 16/18/24 bit words
 
-MIPI DBI (Display Bus interface)
+### MIPI DBI (Display Bus interface)
 - Also known as MCU interface
 - The MIPI-DBI used to interface with a display module with an integrated graphic RAM(GRAM). Ths pixel
   data is first updated in the local GRAM of the display driver chip which repeatedly refreshes the
@@ -47,7 +47,7 @@ MIPI DBI (Display Bus interface)
   - DBI type B: based on intel 8080 bus
   - DBI type C: based on SPI protocol
 
-RGB Interface:
+### RGB Interface:
 - Vsync:
   - This is a vertical synchronization signal sent from the host display controller (LTDC) to the display
     module
@@ -77,3 +77,14 @@ In this picture, Vsync toggles one time, and hsync toggles 270 times.
     interfacing.
 
 ## Implement the LTDC driver
+![img.png](images/Synchronization_timing.png)
+
+
+
+## LGVL
+About LGVL
+Using simulator
+Executing LVGL sample applications on the simulator
+Adding LVGL source code to the STM32 project
+Adding LCD-TFT and touchscreen driver support
+Executing LVGL sample applications on target hardware
