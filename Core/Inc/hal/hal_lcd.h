@@ -5,18 +5,43 @@
 #include <hal/hal_gpio.h>
 #include <hal/hal_reg.h>
 
-#define HSW                         10
-#define HBP                         20
-#define HFP                         10
+#define HAL_LCD_HSW                  10
+#define HAL_LCD_HBP                  20
+#define HAL_LCD_HFP                  10
 
-#define VSW                         2
-#define VBP                         2
-#define VFP                         4
+#define HAL_LCD_VSW                  2
+#define HAL_LCD_VBP                  2
+#define HAL_LCD_VFP                  4
 
-#define ACTIVE_WIDTH
-#define ACTIVE_HEIGHT
+#define HAL_LCD_WIDTH                240
+#define HAL_LCD_HEIGHT               320
 
-void HAL_LCD_Init(void);
+/* Select the orientation */
+#define PORTRAIT                     0
+#define LANDSCAPE                    1
+#define HAL_LCD_ORIENTATION          PORTRAIT
+
+#if(HAL_LCD_ORIENTATION == PORTRAIT)
+    #define HAL_LCD_ACTIVE_WIDTH     HAL_LCD_WIDTH
+    #define HAL_LCD_ACTIVE_HEIGHT    HAL_LCD_HEIGHT
+#elif(HAL_LCD_ORIENTATION == LANDSCAPE)
+    #define HAL_LCD_ACTIVE_WIDTH     HAL_LCD_HEIGHT
+    #define HAL_LCD_ACTIVE_HEIGHT    HAL_LCD_WIDTH
+#endif
+
+#define HAL_LTDC_LAYER_WIDTH         HAL_LCD_ACTIVE_WIDTH
+#define HAL_LTDC_LAYER_HEIGHT        HAL_LCD_ACTIVE_HEIGHT
+#define HAL_LTDC_LAYER_H_START       0
+#define HAL_LTDC_LAYER_H_STOP        HAL_LTDC_LAYER_WIDTH
+#define HAL_LTDC_LAYER_V_START       0
+#define HAL_LTDC_LAYER_V_STOP        HAL_LTDC_LAYER_HEIGHT
+
+/* Select Pixel Format */
+#define HAL_LCD_PIXEL_FMT_L8         1
+#define HAL_LCD_PIXEL_FMT_RGB565     2
+#define HAL_LCD_PIXEL_FMT_RGB666     3
+#define HAL_LCD_PIXEL_FMT_RGB888     4
+#define HAL_LCD_PIXEL_FMT            HAL_LCD_PIXEL_FMT_RGB565
 
 /**
  * Pin Definition
@@ -80,7 +105,16 @@ void HAL_LCD_Init(void);
 #define HAL_LCD_DOTCLK_PORT          GPIOG
 
 extern GPIO_RegDef_t *hal_ltdc_io_port[];
+extern u8 hal_fb[];
 extern const u8 ltdc_pins[];
 extern const u8 total_ltdc_pins;
 
+void HAL_LCD_Init(void);
+u32 hal_lcd_get_fb_address(void);
+u16 Convert_RGB888_to_RGB565(u32 rgb888);
+void write_to_fb_rgb565(u16 *fb_ptr,u32 n_pixels, u16 rgb565);
+void write_to_fb_rgb888(u32 rgb888);
+void write_to_fb_rgb666(u32 rgb666);
+void hal_lcd_set_fb_background_color(u32 rgb888);
+void hal_lcd_fill_rect(u32 rgb888, u32 x_start, u32 x_width,u32 y_start,u32 y_width);
 #endif

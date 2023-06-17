@@ -38,11 +38,57 @@
 GPIO_RegDef_t *hal_ltdc_io_port[] = {
     HAL_LCD_DATA_R2_PORT,
     HAL_LCD_DATA_R3_PORT,
+    HAL_LCD_DATA_R4_PORT,
+    HAL_LCD_DATA_R5_PORT,
+    HAL_LCD_DATA_R6_PORT,
+    HAL_LCD_DATA_R7_PORT,
+
+    HAL_LCD_DATA_G2_PORT,
+    HAL_LCD_DATA_G3_PORT,
+    HAL_LCD_DATA_G4_PORT,
+    HAL_LCD_DATA_G5_PORT,
+    HAL_LCD_DATA_G6_PORT,
+    HAL_LCD_DATA_G7_PORT,
+
+    HAL_LCD_DATA_B2_PORT,
+    HAL_LCD_DATA_B3_PORT,
+    HAL_LCD_DATA_B4_PORT,
+    HAL_LCD_DATA_B5_PORT,
+    HAL_LCD_DATA_B6_PORT,
+    HAL_LCD_DATA_B7_PORT,
+
+    HAL_LCD_HSYNC_PORT,
+    HAL_LCD_VSYNC_PORT,
+    HAL_LCD_DE_PORT,
+    HAL_LCD_DOTCLK_PORT,
 };
 
 const u8 ltdc_pins[] = {
     HAL_LCD_DATA_R2_PIN,
     HAL_LCD_DATA_R3_PIN,
+    HAL_LCD_DATA_R4_PIN,
+    HAL_LCD_DATA_R5_PIN,
+    HAL_LCD_DATA_R6_PIN,
+    HAL_LCD_DATA_R7_PIN,
+
+    HAL_LCD_DATA_G2_PIN,
+    HAL_LCD_DATA_G3_PIN,
+    HAL_LCD_DATA_G4_PIN,
+    HAL_LCD_DATA_G5_PIN,
+    HAL_LCD_DATA_G6_PIN,
+    HAL_LCD_DATA_G7_PIN,
+
+    HAL_LCD_DATA_B2_PIN,
+    HAL_LCD_DATA_B3_PIN,
+    HAL_LCD_DATA_B4_PIN,
+    HAL_LCD_DATA_B5_PIN,
+    HAL_LCD_DATA_B6_PIN,
+    HAL_LCD_DATA_B7_PIN,
+
+    HAL_LCD_HSYNC_PIN,
+    HAL_LCD_VSYNC_PIN,
+    HAL_LCD_DE_PIN,
+    HAL_LCD_DOTCLK_PIN,
 };
 
 #define HAL_LCD_TOTAL_PINS      (sizeof(ltdc_pins) / sizeof(ltdc_pins))
@@ -85,13 +131,13 @@ void HAL_LCD_pinInit(void)
     HAL_REG_SET_VAL(pGPIOD->OSPEEDR, 0x02, 0x03, GPIO_OSPEEDR_OSPEED13_Pos);
 
     /* Set RESX = HIGH, that is, GPIOA pin 7 */
-    HAL_REG_CLR_BIT(pGPIOA->OTYPER, GPIO_ODR_OD7_Pos);
+    HAL_REG_CLR_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);
     
     /* Set CSX = HIGH, that is, GPIOC pin 2 */
-    HAL_REG_CLR_BIT(pGPIOC->OTYPER, GPIO_ODR_OD2_Pos);
+    HAL_REG_CLR_BIT(pGPIOC->ODR, GPIO_ODR_OD2_Pos);
     
     /* Set D/CX = HIGH, that is, GPIOD pin 13 */
-    HAL_REG_CLR_BIT(pGPIOD->OTYPER, GPIO_ODR_OD13_Pos);
+    HAL_REG_CLR_BIT(pGPIOD->ODR, GPIO_ODR_OD13_Pos);
 
 
     /*********************** FOR GPIO PIN ***********************/
@@ -316,6 +362,11 @@ void _HAL_LCD_writeData(u8 *buf, u32 len)
         while(HAL_REG_READ_BIT(pSPI->SR, SPI_SR_BSY_Pos));
         HAL_LCD_CSX_HIGH();
     }
+}
+
+void HAL_LCD_Set_Orientation(int Orientation)
+{
+  /* TODO */
 }
 
 /***************************************************************************/
